@@ -34,4 +34,20 @@ objective('errorize', function() {
     }
   );
 
+  it('preserves the object\'s properties into the error',
+
+    function(done, Errorize, expect) {
+
+      var obj = {
+        key: 'value'
+      };
+
+      var e = Errorize(obj);
+
+      expect(e.key).to.equal('value');
+      done();
+
+    }
+  );
+
 });
