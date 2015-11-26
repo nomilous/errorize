@@ -4,6 +4,8 @@
 
 Ensure it is (or make it an) error.
 
+Because some folks throw strings or other stuff.
+
 `npm install errorize --save`
 
 ```javascript
@@ -25,5 +27,32 @@ var obj = {
 
 var e = errorize(obj);
 
-e.key == 'value'l
+e.key == 'value'
+```
+
+__It decorates functions to ensure arg1 (if present) is an error__
+
+```javascript
+
+.catch(errorize(function(e) {}))
+
+// or
+
+functionWithCallback('args', errorize(function(e, result) {}))
+```
+
+__It can transform error to (json) serializable object__
+
+```javascript
+
+JSON.stringify(errorize.encode(e));
+
+```
+
+__It can include a partial stack in the translation__
+
+```javascript
+
+JSON.stringify(errorize.encode(e, 3));
+
 ```

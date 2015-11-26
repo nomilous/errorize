@@ -50,24 +50,82 @@ objective('errorize', function() {
     }
   );
 
-  it('decorates the function to ensure arg1 is an error',
+  context('decorator', function() {
 
-    function(done, Errorize, expect) {
+    it('decorates the function to ensure arg1 is an error',
 
-      var func1 = function(err, res) {
+      function(done, Errorize, expect) {
 
-        expect(err).to.be.an.instanceof(Error);
-        expect(err.message).to.equal('error string');
-        expect(res).to.equal('result');
+        var func1 = function(err, res) {
+
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('error string');
+          expect(res).to.equal('result');
+          done();
+
+        }
+
+        var func2 = Errorize(func1);
+
+        func2('error string', 'result')
+
+      }
+    );
+
+    it('only erorizes arg1 if present', 
+
+      function(done, Errorize, expect) {
+
+        var func1 = function(err, res) {
+
+          expect(err).to.be.null;
+          expect(res).to.equal('result');
+          done();
+
+        }
+
+        var func2 = Errorize(func1);
+
+        func2(null, 'result')
+
+      }
+    );
+
+
+  });
+
+
+  context('encode', function() {
+
+    it('converts the error to json friendly',
+
+      function(done, Errorize, expect) {
+
+        var obj = new Error('nonomatopoeia');
+        var encoded = Errorize.encode(obj);
+
+        expect(encoded).to.eql({
+          name: 'Error',
+          message: 'nonomatopoeia'
+        });
+        done()
+
+      }
+    );
+
+    it('can include partial stack',
+
+      function(done, Errorize, expect) {
+
+        var obj = new Error('yetaphor')
+        var encoded = Errorize.encode(obj, 3);
+
+        expect(encoded.stack.length).to.equal(3);
         done();
 
       }
+    );
 
-      var func2 = Errorize(func1);
-
-      func2('error string', 'result')
-
-    }
-  );
+  });
 
 });
